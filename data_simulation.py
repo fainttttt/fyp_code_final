@@ -92,7 +92,7 @@ df = 5 # specify tail heaviness
 # # parameter required for skew normal distribution
 
 # t_data = simulate_return(historical_data, num_simulations, method = 'multivariate_t', df = df)
-# norm_data = simulate_return(historical_data, num_simulations, method = 'multivariate_normal', df = df)
+norm_data = simulate_return(historical_data, num_simulations, method = 'multivariate_normal', df = df)
 # skew_norm_data = simulate_return(historical_data, num_simulations, method = 'skew_normal', df = df)
 
 # cba = create_bootstrap_samples(historical_data, num_simulations, num_samples, sample_size, method = 'multivariate_t', df = df)
@@ -127,3 +127,146 @@ df = 5 # specify tail heaviness
 #         print(f'{stats} for {column} in norm distribution equals {norm_stats[str(stats)][str(column)]}')
 #         print(f'{stats} for {column} in skew_norm distribution equals {skew_norm_stats[str(stats)][str(column)]}')
 #         print('\n')
+
+mae_all = []
+mse_all = []
+rmse_all = []
+
+for start in range(264):
+    test_data = monthly_return.iloc[start:start+36,:9]
+    norm_data = simulate_return(test_data, num_simulations, method = 'multivariate_normal', df = df)
+    true_data = monthly_return.iloc[start+36,:9]
+
+    # Initialize lists to store errors
+    mae_list = []
+    mse_list = []
+    rmse_list = []
+
+    # Calculate errors for each row
+    for ix in range(num_simulations):
+        row = norm_data.loc[ix]
+        # Calculate errors
+        mae = np.mean(np.abs(row - true_data))
+        mse = np.mean((row - true_data) ** 2)
+        rmse = np.sqrt(mse)
+
+        # Append results to the lists
+        mae_list.append(mae)
+        mse_list.append(mse)
+        rmse_list.append(rmse)
+
+    # Convert lists to NumPy arrays for easier manipulation
+    mae_all.append(sum(np.array(mae_list)))
+    mse_all.append(sum(np.array(mse_list)))
+    rmse_all.append(sum(np.array(rmse_list)))
+    
+mae_norm = mae_all
+mse_norm = mse_all
+rmse_norm = rmse_all
+
+mae_all = []
+mse_all = []
+rmse_all = []
+
+for start in range(264):
+    test_data = monthly_return.iloc[start:start+36,:9]
+    norm_data = simulate_return(test_data, num_simulations, method = 'multivariate_t', df = df)
+    true_data = monthly_return.iloc[start+36,:9]
+
+    # Initialize lists to store errors
+    mae_list = []
+    mse_list = []
+    rmse_list = []
+
+    # Calculate errors for each row
+    for ix in range(num_simulations):
+        row = norm_data.loc[ix]
+        # Calculate errors
+        mae = np.mean(np.abs(row - true_data))
+        mse = np.mean((row - true_data) ** 2)
+        rmse = np.sqrt(mse)
+
+        # Append results to the lists
+        mae_list.append(mae)
+        mse_list.append(mse)
+        rmse_list.append(rmse)
+
+    # Convert lists to NumPy arrays for easier manipulation
+    mae_all.append(sum(np.array(mae_list)))
+    mse_all.append(sum(np.array(mse_list)))
+    rmse_all.append(sum(np.array(rmse_list)))
+    
+mae_t = mae_all
+mse_t = mse_all
+rmse_t = rmse_all
+
+mae_all = []
+mse_all = []
+rmse_all = []
+
+for start in range(264):
+    test_data = monthly_return.iloc[start:start+36,:9]
+    norm_data = simulate_return(test_data, num_simulations, method = 'skew_normal', df = df)
+    true_data = monthly_return.iloc[start+36,:9]
+
+    # Initialize lists to store errors
+    mae_list = []
+    mse_list = []
+    rmse_list = []
+
+    # Calculate errors for each row
+    for ix in range(num_simulations):
+        row = norm_data.loc[ix]
+        # Calculate errors
+        mae = np.mean(np.abs(row - true_data))
+        mse = np.mean((row - true_data) ** 2)
+        rmse = np.sqrt(mse)
+
+        # Append results to the lists
+        mae_list.append(mae)
+        mse_list.append(mse)
+        rmse_list.append(rmse)
+
+    # Convert lists to NumPy arrays for easier manipulation
+    mae_all.append(sum(np.array(mae_list)))
+    mse_all.append(sum(np.array(mse_list)))
+    rmse_all.append(sum(np.array(rmse_list)))
+    
+mae_sn = mae_all
+mse_sn = mse_all
+rmse_sn = rmse_all
+
+mae_norm
+mae_t
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Assuming the x-axis is the same for all three lists
+x = np.arange(len(mae_norm))  # Create an x-axis based on the length of the lists
+
+# Create the plot
+plt.figure(figsize=(14, 7))  # Set a larger figure size
+
+# Plot each list with different styles
+plt.plot(x, rmse_norm, label='Normal', marker='', linestyle='-', alpha=0.6)  # Line plot
+plt.plot(x, rmse_t, label='T', marker='', linestyle='--', alpha=0.6)  # Dashed line plot
+plt.plot(x, rmse_sn, label='Skew Normal', marker='', linestyle=':', alpha=0.6)  # Dotted line plot
+
+# Reduce the number of x-ticks for better readability
+tick_indices = np.arange(0, len(mae_norm), 20)  # Show every 20th tick
+plt.xticks(tick_indices, tick_indices)
+
+# Add titles and labels
+plt.title('Plot of Three Long Lists')
+plt.xlabel('Index')
+plt.ylabel('RMSE')
+
+# Add a legend
+plt.legend()
+
+# Show the grid for better readability
+plt.grid(True)
+
+# Show the plot
+plt.show()
