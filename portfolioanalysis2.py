@@ -243,3 +243,8 @@ plt.legend(title='Method', bbox_to_anchor=(0.8, 1), loc='upper left')
 plt.tight_layout()
 plt.savefig('Analysis_of_Method_Percentile.png', dpi=300, bbox_inches='tight')
 plt.show()
+
+
+# git add .
+# git commit -m "Your commit message"
+# git push origin master  # or git push origin main
