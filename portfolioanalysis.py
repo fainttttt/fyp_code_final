@@ -82,6 +82,10 @@ combined_df = pd.DataFrame({
     'Risk': risks
 })
 
+folder_path = '/Users/fabian/Desktop/FYP/FYP_Code/code/data_clean'
+csv_file = os.path.join(folder_path,"lookup_table.csv")
+combined_df.to_csv(csv_file, index = False)
+print(f"DataFrame saved as CSV in: {csv_file}")
 
 ##############################################################################
 
