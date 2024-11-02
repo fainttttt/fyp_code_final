@@ -92,7 +92,7 @@ df = 5 # specify tail heaviness
 # # parameter required for skew normal distribution
 
 # t_data = simulate_return(historical_data, num_simulations, method = 'multivariate_t', df = df)
-norm_data = simulate_return(historical_data, num_simulations, method = 'multivariate_normal', df = df)
+# norm_data = simulate_return(historical_data, num_simulations, method = 'multivariate_normal', df = df)
 # skew_norm_data = simulate_return(historical_data, num_simulations, method = 'skew_normal', df = df)
 
 # cba = create_bootstrap_samples(historical_data, num_simulations, num_samples, sample_size, method = 'multivariate_t', df = df)
@@ -128,9 +128,10 @@ norm_data = simulate_return(historical_data, num_simulations, method = 'multivar
 #         print(f'{stats} for {column} in skew_norm distribution equals {skew_norm_stats[str(stats)][str(column)]}')
 #         print('\n')
 
-mae_all = []
-mse_all = []
-rmse_all = []
+
+mae_norm = []
+mse_norm = []
+rmse_norm = []
 
 for start in range(264):
     test_data = monthly_return.iloc[start:start+36,:9]
@@ -156,17 +157,13 @@ for start in range(264):
         rmse_list.append(rmse)
 
     # Convert lists to NumPy arrays for easier manipulation
-    mae_all.append(sum(np.array(mae_list)))
-    mse_all.append(sum(np.array(mse_list)))
-    rmse_all.append(sum(np.array(rmse_list)))
-    
-mae_norm = mae_all
-mse_norm = mse_all
-rmse_norm = rmse_all
+    mae_norm.append(sum(np.array(mae_list)))
+    mse_norm.append(sum(np.array(mse_list)))
+    rmse_norm.append(sum(np.array(rmse_list)))
 
-mae_all = []
-mse_all = []
-rmse_all = []
+mae_t = []
+mse_t = []
+rmse_t = []
 
 for start in range(264):
     test_data = monthly_return.iloc[start:start+36,:9]
@@ -192,17 +189,13 @@ for start in range(264):
         rmse_list.append(rmse)
 
     # Convert lists to NumPy arrays for easier manipulation
-    mae_all.append(sum(np.array(mae_list)))
-    mse_all.append(sum(np.array(mse_list)))
-    rmse_all.append(sum(np.array(rmse_list)))
-    
-mae_t = mae_all
-mse_t = mse_all
-rmse_t = rmse_all
+    mae_t.append(sum(np.array(mae_list)))
+    mse_t.append(sum(np.array(mse_list)))
+    rmse_t.append(sum(np.array(rmse_list)))
 
-mae_all = []
-mse_all = []
-rmse_all = []
+mae_sn = []
+mse_sn = []
+rmse_sn = []
 
 for start in range(264):
     test_data = monthly_return.iloc[start:start+36,:9]
@@ -228,45 +221,24 @@ for start in range(264):
         rmse_list.append(rmse)
 
     # Convert lists to NumPy arrays for easier manipulation
-    mae_all.append(sum(np.array(mae_list)))
-    mse_all.append(sum(np.array(mse_list)))
-    rmse_all.append(sum(np.array(rmse_list)))
-    
-mae_sn = mae_all
-mse_sn = mse_all
-rmse_sn = rmse_all
+    mae_sn.append(sum(np.array(mae_list)))
+    mse_sn.append(sum(np.array(mse_list)))
+    rmse_sn.append(sum(np.array(rmse_list)))
 
-mae_norm
-mae_t
+folder_path = 'data_clean'
 
-import matplotlib.pyplot as plt
-import numpy as np
+model_valiation_df = pd.DataFrame({
+    'mae_norm': mae_norm,
+    'mae_t': mae_t,
+    'mae_sn': mae_sn,
+    'mse_norm': mse_norm,
+    'mse_t': mse_t,
+    'mse_sn': mse_sn,
+    'rmse_norm': rmse_norm,
+    'rmse_t': rmse_t,
+    'rmse_sn': rmse_sn
+})
 
-# Assuming the x-axis is the same for all three lists
-x = np.arange(len(mae_norm))  # Create an x-axis based on the length of the lists
-
-# Create the plot
-plt.figure(figsize=(14, 7))  # Set a larger figure size
-
-# Plot each list with different styles
-plt.plot(x, rmse_norm, label='Normal', marker='', linestyle='-', alpha=0.6)  # Line plot
-plt.plot(x, rmse_t, label='T', marker='', linestyle='--', alpha=0.6)  # Dashed line plot
-plt.plot(x, rmse_sn, label='Skew Normal', marker='', linestyle=':', alpha=0.6)  # Dotted line plot
-
-# Reduce the number of x-ticks for better readability
-tick_indices = np.arange(0, len(mae_norm), 20)  # Show every 20th tick
-plt.xticks(tick_indices, tick_indices)
-
-# Add titles and labels
-plt.title('Plot of Three Long Lists')
-plt.xlabel('Index')
-plt.ylabel('RMSE')
-
-# Add a legend
-plt.legend()
-
-# Show the grid for better readability
-plt.grid(True)
-
-# Show the plot
-plt.show()
+csv_file = os.path.join(folder_path,"simulation_model_validation.csv")
+model_valiation_df.to_csv(csv_file, index = False)
+print(f"DataFrame saved as CSV in: {csv_file}")
