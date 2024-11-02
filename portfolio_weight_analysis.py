@@ -98,7 +98,7 @@ max_stats_transpose = max_stats.T
 zero_stats_transpose = zero_stats.T
 
 # Plotting
-plt.figure(figsize=(14, 7))
+plt.figure(figsize=(12, 7))
 
 # Plotting Zero Hits
 for column in zero_stats_transpose.columns:

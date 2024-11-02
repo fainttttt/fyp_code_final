@@ -207,39 +207,76 @@ plt.show()
 
 ### Analysis of Methods -- Percentile ###
 
-my_filter_portfolios = my_results[['Method','Distribution','Risk','5th_percentile','95th_percentile']]
-my_filter_portfolios['lookup'] = my_filter_portfolios['Distribution'] + "_" + my_filter_portfolios['Risk']
+# my_filter_portfolios = my_results[['Method','Distribution','Risk','5th_percentile','95th_percentile']]
+# my_filter_portfolios['lookup'] = my_filter_portfolios['Distribution'] + "_" + my_filter_portfolios['Risk']
 
-plt.figure(figsize=(10, 6))
-sns.scatterplot(
-    data = my_filter_portfolios,
-    x = '5th_percentile',
-    y='95th_percentile',
-    hue='Method',  # Color by group
-    # style='Method',  # Different markers for each group
-    s=100  # Marker size
-)
+import matplotlib.pyplot as plt
+import pandas as pd
 
-# Linking pairs of points using the lookup column
-for name, group in my_filter_portfolios.groupby('lookup'):
-    if len(group) > 1:
-        # Extract the x and y values for the pairs
-        x_values = group['5th_percentile'].values
-        y_values = group['95th_percentile'].values
-        
-        # Plot lines between points in the same group
-        plt.plot(
-            x_values,
-            y_values,
-            linestyle='-', 
-            color='grey', 
-            alpha=0.5
-        )
+# Ensure my_results is defined and has the necessary columns
+# Example DataFrame creation for demonstration (remove this if you already have my_results)
+# my_results = pd.DataFrame({
+#     'Method': ['Group1', 'Group2', 'Group1', 'Group2', 'Group1'],
+#     '5th_percentile': [10, 15, 20, 25, 30],
+#     '95th_percentile': [40, 45, 50, 55, 60]
+# })
 
-plt.title('Scatter Plot of 95th_percentile vs. 5th_percentile')
-plt.xlabel('5th_percentile')
-plt.ylabel('95th_percentile')
-plt.legend(title='Method', bbox_to_anchor=(0.8, 1), loc='upper left')
-plt.tight_layout()
-plt.savefig('Analysis_of_Method_Percentile.png', dpi=300, bbox_inches='tight')
+# Filter portfolios
+my_filter_portfolios = my_results[['Method', '5th_percentile', '95th_percentile']]
+
+# Map method groups to colors
+color_map = {'mpt': 'blue', 'proposed': 'orange'}
+my_filter_portfolios['Color'] = my_filter_portfolios['Method'].map(color_map)
+
+# Create a scatter plot
+plt.figure(figsize=(8, 5))
+scatter = plt.scatter(my_filter_portfolios['95th_percentile'], 
+                      my_filter_portfolios['5th_percentile'], 
+                      color=my_filter_portfolios['Color'], 
+                      s=50,  # Adjust marker size here
+                      marker='x')  # Use 'x' for cross markers
+
+# Set labels and title
+plt.xlabel('95th Percentile')
+plt.ylabel('5th Percentile')
+plt.title('Scatter Plot of Percentile Returns across Methods')
+plt.savefig('Analysis_of_Method_Percentile_New.png', dpi=300, bbox_inches='tight')
 plt.show()
+
+
+
+
+
+# plt.figure(figsize=(10, 6))
+# sns.scatterplot(
+#     data = my_filter_portfolios,
+#     x = '5th_percentile',
+#     y='95th_percentile',
+#     hue='Method',  # Color by group
+#     # style='Method',  # Different markers for each group
+#     s=100  # Marker size
+# )
+
+# # Linking pairs of points using the lookup column
+# for name, group in my_filter_portfolios.groupby('lookup'):
+#     if len(group) > 1:
+#         # Extract the x and y values for the pairs
+#         x_values = group['5th_percentile'].values
+#         y_values = group['95th_percentile'].values
+        
+#         # Plot lines between points in the same group
+#         plt.plot(
+#             x_values,
+#             y_values,
+#             linestyle='-', 
+#             color='grey', 
+#             alpha=0.5
+#         )
+
+# plt.title('Scatter Plot of 95th_percentile vs. 5th_percentile')
+# plt.xlabel('5th_percentile')
+# plt.ylabel('95th_percentile')
+# plt.legend(title='Method', bbox_to_anchor=(0.8, 1), loc='upper left')
+# plt.tight_layout()
+# plt.savefig('Analysis_of_Method_Percentile.png', dpi=300, bbox_inches='tight')
+# plt.show()
