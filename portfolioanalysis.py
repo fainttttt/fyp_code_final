@@ -297,21 +297,55 @@ initial_investment = 1000
 investment_trajectories = (1 + df).cumprod() * initial_investment
 print(investment_trajectories)
 
-plt.figure(figsize=(12, 6))
+combined_df['Method'] == 'mpt'
+investment_trajectories.columns = combined_df['Method']
+investment_trajectories
 
-investment_trajectories.columns = combined_df['lookup']
-for column in investment_trajectories.columns:
-    plt.plot(investment_trajectories.index, investment_trajectories[column], label=column)
+# Define indices for the two groups
+mpt_indices = [0, 2, 3, 4, 7, 8, 10, 12, 15, 17, 21, 23]
+mpt_group = investment_trajectories.iloc[:, mpt_indices]
+proposed_indices = [i for i in range(investment_trajectories.shape[1]) if i not in mpt_indices]
+proposed_group = investment_trajectories.iloc[:, proposed_indices]
 
-plt.title('Investment Trajectories')
-plt.xlabel('Time Period')
-plt.ylabel('Investment Amount ($)')
-plt.legend(title='Investment Strategy', bbox_to_anchor=(1.05, 1), loc='upper left')  # Move legend outside the plot
+# Plotting
+plt.figure(figsize=(14, 7))
+
+# Plotting the first group (mpt_group) in blue
+plt.plot(mpt_group.index, mpt_group, label='MPT Method', color='blue', alpha=0.7)
+
+# Plotting the second group (proposed_group) in orange
+plt.plot(proposed_group.index, proposed_group, label='Proposed Method', color='orange', alpha=0.7)
+
+# Adding titles and labels
+plt.title('Investment Trajectory Over 264 Months')
+plt.xlabel('Months')
+plt.ylabel('Investment Amount')
+plt.axhline(0, color='gray', lw=0.8, ls='--')  # Line at y=0 for reference
+
+# Simplified legend
+plt.legend(loc='upper left', fontsize='small')
 plt.grid()
-
-plt.tight_layout()  # Adjust layout to make room for the legend
-plt.savefig('Investment_Trajectories.png', dpi=300, bbox_inches='tight')
+plt.tight_layout()  # Adjust layout to prevent clipping of labels
+plt.savefig('Investment_Trajectory_by_Methods.png', dpi=300, bbox_inches='tight')
 plt.show()
+
+
+
+# plt.figure(figsize=(12, 6))
+
+# investment_trajectories.columns = combined_df['lookup']
+# for column in investment_trajectories.columns:
+#     plt.plot(investment_trajectories.index, investment_trajectories[column], label=column)
+
+# plt.title('Investment Trajectories')
+# plt.xlabel('Time Period')
+# plt.ylabel('Investment Amount ($)')
+# plt.legend(title='Investment Strategy', bbox_to_anchor=(1.05, 1), loc='upper left')  # Move legend outside the plot
+# plt.grid()
+
+# plt.tight_layout()  # Adjust layout to make room for the legend
+# plt.savefig('Investment_Trajectories.png', dpi=300, bbox_inches='tight')
+# plt.show()
 
 
 ### Final Investment Amounts ###
