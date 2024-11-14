@@ -1,6 +1,6 @@
 import os
 os.chdir('/Users/fabian/Desktop/FYP/FYP_Code/code')
-print("Current Working Directory:", os.getcwd())
+# print("Current Working Directory:", os.getcwd())
 
 import numpy as np
 import pandas as pd

@@ -1,15 +1,20 @@
-from model_mpt import *
-from model_proposed import *
+from data_simulation import estimate_skew_normal_params, simulate_return, create_bootstrap_samples
+from model_mpt import calculate_utility, objective_function, rolling_portfolio_optimization_mpt
+from model_proposed import calculate_top_mean, optimize_portfolio_top_mean, calculate_bottom_mean, optimize_portfolio_bottom_mean, rolling_portfolio_optimization_proposed
 
+import os
 os.chdir('/Users/fabian/Desktop/FYP/FYP_Code/code')
 print("Current Working Directory:", os.getcwd())
+    
+import pandas as pd
+import numpy as np
 
-current_dir = os.getcwd()
+# current_dir = os.getcwd()
 
-relative_file_path = os.path.join(current_dir, 'data_clean', '9_Sectors_Ticker_Monthly_Returns.csv')
+relative_file_path = os.path.join(os.getcwd(), 'data_clean', '9_Sectors_Ticker_Monthly_Returns.csv')
 monthly_return = pd.read_csv(relative_file_path)
 
-relative_file_path = os.path.join(current_dir, 'data_clean', '01_HMM_Regimes_BullBear.csv')
+relative_file_path = os.path.join(os.getcwd(), 'data_clean', '01_HMM_Regimes_BullBear.csv')
 hmm_regimes = pd.read_csv(relative_file_path)
 
 all_historical_data = monthly_return.iloc[:,:9]

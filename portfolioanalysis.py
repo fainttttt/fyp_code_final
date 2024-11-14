@@ -357,3 +357,12 @@ final_investment_amount = final_investment_amount.reset_index(drop=True)
 final_investment_amount = final_investment_amount[['Method','Distribution','Risk','Final Investment Amount']]
 final_investment_amount = final_investment_amount.sort_values(by = 'Final Investment Amount', ascending = False)
 print(final_investment_amount)
+
+
+
+# generate pivot table for presentation --- sharpe ratio #
+result = combined_df.pivot_table(index=['Method', 'Distribution'], 
+                                 columns='Risk', 
+                                 values='max_dd').reset_index()
+result.reset_index(drop = True, inplace = True)
+print(result)
