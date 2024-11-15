@@ -173,29 +173,26 @@ print(f"DataFrame saved as CSV in: {csv_file}")
  ##############################################################################
 
 # generate pivot table for presentation --- sharpe ratio #
-result = combined_df.pivot_table(index=['Distribution', 'Risk'], 
-                                 columns='Method', 
+result = combined_df.pivot_table(index=['Method', 'Distribution'], 
+                                 columns='Risk', 
                                  values='sharpe_ratio').reset_index()
-
-result['diff'] = result['mpt'] - result['proposed']
+# result['diff'] = result['mpt'] - result['proposed']
 result.reset_index(drop = True, inplace = True)
 print(result)
 
 # generate pivot table for presentation --- max drawdown #
-result = combined_df.pivot_table(index=['Distribution', 'Risk'], 
-                                 columns='Method', 
+result = combined_df.pivot_table(index=['Method', 'Distribution'], 
+                                 columns='Risk', 
                                  values='max_dd').reset_index()
-
-result['diff'] = result['mpt'] - result['proposed']
+# result['diff'] = result['mpt'] - result['proposed']
 result.reset_index(drop = True, inplace = True)
 print(result)
 
 # generate pivot table for presentation --- transaction cost #
-result = combined_df.pivot_table(index=['Distribution', 'Risk'], 
-                                 columns='Method', 
+result = combined_df.pivot_table(index=['Method', 'Distribution'], 
+                                 columns='Risk', 
                                  values='tc').reset_index()
-
-result['diff'] = result['mpt'] - result['proposed']
+# result['diff'] = result['mpt'] - result['proposed']
 result.reset_index(drop = True, inplace = True)
 print(result)
 
@@ -207,89 +204,108 @@ print(result)
 
 ##############################################################################
 
-### Individual Boxplots ###
+# ### Individual Boxplots ###
+# import matplotlib.pyplot as plt
+# import seaborn as sns
+
+# monthly_returns = list(combined_df['portfolio_return'])
+# df = pd.DataFrame(monthly_returns).T
+
+# plt.figure(figsize=(14, 8))
+# sns.boxplot(data=df, palette="Set3")
+
+# plt.title('Box Plots of Monthly Returns for 24 Series', fontsize=16)
+# plt.xlabel('Series', fontsize=14)
+# plt.ylabel('Monthly Returns', fontsize=14)
+# plt.xticks(rotation=45)  # Rotate x-axis labels if needed
+
+# plt.tight_layout()
+# plt.show()
+
+# ##############################################################################
+
+# ### Grouped Boxplot of Returns --- Method ###
+
+# group_labels = combined_df['Method'].values
+# assert len(group_labels) == df.shape[1]
+
+# groups_df = pd.DataFrame({'Group': group_labels})
+# df_grouped = pd.concat([groups_df, df], axis=1)
+# df_melted = df_grouped.melt(id_vars='Group', var_name='Series', value_name='Monthly Return')
+
+# plt.figure(figsize=(14, 8))
+# sns.violinplot(x='Group', y='Monthly Return', data=df_melted, palette="Set3")
+
+# plt.title('Grouped Violin Plots of Monthly Returns --- Method', fontsize=16)
+# plt.xlabel('Group', fontsize=14)
+# plt.ylabel('Monthly Returns', fontsize=14)
+
+# plt.tight_layout()
+# # plt.savefig('Grouped_Violinplot_Returns_Method.png', dpi=300, bbox_inches='tight')
+# plt.show()
+
+
+# ### Grouped Boxplot of Returns --- Distribution ###
+
+# group_labels = combined_df['Distribution'].values
+# assert len(group_labels) == df.shape[1]
+
+# groups_df = pd.DataFrame({'Group': group_labels})
+# df_grouped = pd.concat([groups_df, df], axis=1)
+# df_melted = df_grouped.melt(id_vars='Group', var_name='Series', value_name='Monthly Return')
+
+# plt.figure(figsize=(14, 8))
+# sns.violinplot(x='Group', y='Monthly Return', data=df_melted, palette="Set3")
+
+# plt.title('Grouped Violin Plots of Monthly Returns --- Distribution', fontsize=16)
+# plt.xlabel('Group', fontsize=14)
+# plt.ylabel('Monthly Returns', fontsize=14)
+
+# plt.tight_layout()
+# # plt.savefig('Grouped_Violinplot_Returns_Distribution.png', dpi=300, bbox_inches='tight')
+# plt.show()
+
+
+# ### Grouped Boxplot of Returns --- Risk ###
+
+# group_labels = combined_df['Risk'].values
+# assert len(group_labels) == df.shape[1]
+
+# groups_df = pd.DataFrame({'Group': group_labels})
+# df_grouped = pd.concat([groups_df, df], axis=1)
+# df_melted = df_grouped.melt(id_vars='Group', var_name='Series', value_name='Monthly Return')
+
+# plt.figure(figsize=(14, 8))
+# sns.boxplot(x='Group', y='Monthly Return', data=df_melted, palette="Set3")
+
+# plt.title('Grouped Violin Plots of Monthly Returns --- Risk', fontsize=16)
+# plt.xlabel('Group', fontsize=14)
+# plt.ylabel('Monthly Returns', fontsize=14)
+
+# plt.tight_layout()
+# # plt.savefig('Grouped_Violinplot_Returns_Risk.png', dpi=300, bbox_inches='tight')
+# plt.show()
+
+##############################################################################
+
+import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-monthly_returns = list(combined_df['portfolio_return'])
-df = pd.DataFrame(monthly_returns).T
+filtered_df = combined_df[['Method','Distribution','Risk','portfolio_return']]
+filtered_df = filtered_df[filtered_df['Distribution'] == 'skew_normal'] # normal or skew_normal or t
+df_expanded = filtered_df.explode('portfolio_return')
+df_expanded['portfolio_return'] = pd.to_numeric(df_expanded['portfolio_return'])
 
-plt.figure(figsize=(14, 8))
-sns.boxplot(data=df, palette="Set3")
+# df_expanded['lookup'] = df_expanded['Method'].astype(str) + '_' + df_expanded['Distribution'].astype(str) + '_' + df_expanded['Risk'].astype(str)
 
-plt.title('Box Plots of Monthly Returns for 24 Series', fontsize=16)
-plt.xlabel('Series', fontsize=14)
-plt.ylabel('Monthly Returns', fontsize=14)
-plt.xticks(rotation=45)  # Rotate x-axis labels if needed
-
-plt.tight_layout()
+plt.figure(figsize=(12, 6))
+sns.violinplot(x='Risk', y='portfolio_return', data=df_expanded)
+plt.xticks(rotation=0)
+plt.title('Boxplots of Portfolio Return by Risk under Skew Normal Distribution')
+plt.xlabel('Risk Groups')
+plt.ylabel('Portfolio Return')
 plt.show()
-
-##############################################################################
-
-### Grouped Boxplot of Returns --- Method ###
-
-group_labels = combined_df['Method'].values
-assert len(group_labels) == df.shape[1]
-
-groups_df = pd.DataFrame({'Group': group_labels})
-df_grouped = pd.concat([groups_df, df], axis=1)
-df_melted = df_grouped.melt(id_vars='Group', var_name='Series', value_name='Monthly Return')
-
-plt.figure(figsize=(14, 8))
-sns.violinplot(x='Group', y='Monthly Return', data=df_melted, palette="Set3")
-
-plt.title('Grouped Violin Plots of Monthly Returns --- Method', fontsize=16)
-plt.xlabel('Group', fontsize=14)
-plt.ylabel('Monthly Returns', fontsize=14)
-
-plt.tight_layout()
-plt.savefig('Grouped_Violinplot_Returns_Method.png', dpi=300, bbox_inches='tight')
-plt.show()
-
-
-### Grouped Boxplot of Returns --- Distribution ###
-
-group_labels = combined_df['Distribution'].values
-assert len(group_labels) == df.shape[1]
-
-groups_df = pd.DataFrame({'Group': group_labels})
-df_grouped = pd.concat([groups_df, df], axis=1)
-df_melted = df_grouped.melt(id_vars='Group', var_name='Series', value_name='Monthly Return')
-
-plt.figure(figsize=(14, 8))
-sns.violinplot(x='Group', y='Monthly Return', data=df_melted, palette="Set3")
-
-plt.title('Grouped Violin Plots of Monthly Returns --- Distribution', fontsize=16)
-plt.xlabel('Group', fontsize=14)
-plt.ylabel('Monthly Returns', fontsize=14)
-
-plt.tight_layout()
-plt.savefig('Grouped_Violinplot_Returns_Distribution.png', dpi=300, bbox_inches='tight')
-plt.show()
-
-
-### Grouped Boxplot of Returns --- Risk ###
-
-group_labels = combined_df['Risk'].values
-assert len(group_labels) == df.shape[1]
-
-groups_df = pd.DataFrame({'Group': group_labels})
-df_grouped = pd.concat([groups_df, df], axis=1)
-df_melted = df_grouped.melt(id_vars='Group', var_name='Series', value_name='Monthly Return')
-
-plt.figure(figsize=(14, 8))
-sns.violinplot(x='Group', y='Monthly Return', data=df_melted, palette="Set3")
-
-plt.title('Grouped Violin Plots of Monthly Returns --- Risk', fontsize=16)
-plt.xlabel('Group', fontsize=14)
-plt.ylabel('Monthly Returns', fontsize=14)
-
-plt.tight_layout()
-plt.savefig('Grouped_Violinplot_Returns_Risk.png', dpi=300, bbox_inches='tight')
-plt.show()
-
-##############################################################################
 
 
 ### Investment Trajectories ###
@@ -363,6 +379,6 @@ print(final_investment_amount)
 # generate pivot table for presentation --- sharpe ratio #
 result = combined_df.pivot_table(index=['Method', 'Distribution'], 
                                  columns='Risk', 
-                                 values='max_dd').reset_index()
+                                 values='tc').reset_index()
 result.reset_index(drop = True, inplace = True)
 print(result)
