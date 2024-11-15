@@ -147,6 +147,7 @@ plt.show()
 
 
 ### Analysis of Risk Preferences ###
+my_filter_portfolios = my_results[my_results['Risk'] != 'risk_seeking']
 plt.figure(figsize=(10, 6))
 
 sns.scatterplot(

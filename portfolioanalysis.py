@@ -309,41 +309,70 @@ plt.show()
 
 
 ### Investment Trajectories ###
+monthly_returns = list(combined_df['portfolio_return'])
+df = pd.DataFrame(monthly_returns).T
 initial_investment = 1000
 investment_trajectories = (1 + df).cumprod() * initial_investment
+investment_trajectories.columns = combined_df['lookup']
 print(investment_trajectories)
 
-combined_df['Method'] == 'mpt'
-investment_trajectories.columns = combined_df['Method']
-investment_trajectories
 
-# Define indices for the two groups
-mpt_indices = [0, 2, 3, 4, 7, 8, 10, 12, 15, 17, 21, 23]
-mpt_group = investment_trajectories.iloc[:, mpt_indices]
-proposed_indices = [i for i in range(investment_trajectories.shape[1]) if i not in mpt_indices]
-proposed_group = investment_trajectories.iloc[:, proposed_indices]
+hmm_lookup = combined_df[combined_df['Risk'] == 'hmm']['lookup']
+mrp_lookup = combined_df[combined_df['Risk'] == 'mrp']['lookup']
+ra_lookup = combined_df[combined_df['Risk'] == 'risk_averse']['lookup']
 
-# Plotting
-plt.figure(figsize=(14, 7))
+# filter_portfolio = ['mpt_normal_hmm', 'mpt_normal_mrp', 'mpt_normal_risk_averse']
+# filter_trajectories = investment_trajectories[filter_portfolio]
 
-# Plotting the first group (mpt_group) in blue
-plt.plot(mpt_group.index, mpt_group, label='MPT Method', color='blue', alpha=0.7)
+# combined_df['Method'] == 'mpt'
+# investment_trajectories.columns = combined_df['Method']
+# investment_trajectories
 
-# Plotting the second group (proposed_group) in orange
-plt.plot(proposed_group.index, proposed_group, label='Proposed Method', color='orange', alpha=0.7)
+# # Define indices for the two groups
+# mpt_indices = [0, 2, 3, 4, 7, 8, 10, 12, 15, 17, 21, 23]
+# mpt_group = investment_trajectories.iloc[:, mpt_indices]
+# proposed_indices = [i for i in range(investment_trajectories.shape[1]) if i not in mpt_indices]
+# proposed_group = investment_trajectories.iloc[:, proposed_indices]
 
-# Adding titles and labels
-plt.title('Investment Trajectory Over 264 Months')
-plt.xlabel('Months')
-plt.ylabel('Investment Amount')
-plt.axhline(0, color='gray', lw=0.8, ls='--')  # Line at y=0 for reference
 
-# Simplified legend
-plt.legend(loc='upper left', fontsize='small')
-plt.grid()
-plt.tight_layout()  # Adjust layout to prevent clipping of labels
-plt.savefig('Investment_Trajectory_by_Methods.png', dpi=300, bbox_inches='tight')
+# Plotting the trajectories
+plt.figure(figsize=(10, 6))
+plt.plot(range(len(investment_trajectories)), investment_trajectories['mpt_normal_hmm'], label='HMM Framework', color='#1f77b4')
+plt.plot(range(len(investment_trajectories)), investment_trajectories['mpt_normal_mrp'], label='MRP Framework', color='#ff7f0e')
+plt.plot(range(len(investment_trajectories)), investment_trajectories['mpt_normal_risk_averse'], label='Risk Averse', color='#2ca02c')
+
+# Customizing the plot
+plt.title('Investment Trajectories Over Time (MPT, Normal)')
+plt.xlabel('Time')
+plt.ylabel('Value')
+plt.legend()
+plt.grid(alpha=0.3)
+plt.tight_layout()
+plt.savefig('Investment_Trajectory(MPT,Normal).png', dpi=300, bbox_inches='tight')
 plt.show()
+
+
+# # Plotting
+# plt.figure(figsize=(14, 7))
+
+# # Plotting the first group (mpt_group) in blue
+# plt.plot(mpt_group.index, mpt_group, label='MPT Method', color='blue', alpha=0.7)
+
+# # Plotting the second group (proposed_group) in orange
+# plt.plot(proposed_group.index, proposed_group, label='Proposed Method', color='orange', alpha=0.7)
+
+# # Adding titles and labels
+# plt.title('Investment Trajectory Over 264 Months')
+# plt.xlabel('Months')
+# plt.ylabel('Investment Amount')
+# plt.axhline(0, color='gray', lw=0.8, ls='--')  # Line at y=0 for reference
+
+# # Simplified legend
+# plt.legend(loc='upper left', fontsize='small')
+# plt.grid()
+# plt.tight_layout()  # Adjust layout to prevent clipping of labels
+# plt.savefig('Investment_Trajectory_by_Methods.png', dpi=300, bbox_inches='tight')
+# plt.show()
 
 
 
