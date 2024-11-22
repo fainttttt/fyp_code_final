@@ -337,9 +337,9 @@ ra_lookup = combined_df[combined_df['Risk'] == 'risk_averse']['lookup']
 
 # Plotting the trajectories
 plt.figure(figsize=(10, 6))
-plt.plot(range(len(investment_trajectories)), investment_trajectories['mpt_normal_hmm'], label='HMM Framework', color='#1f77b4')
-plt.plot(range(len(investment_trajectories)), investment_trajectories['mpt_normal_mrp'], label='MRP Framework', color='#ff7f0e')
-plt.plot(range(len(investment_trajectories)), investment_trajectories['mpt_normal_risk_averse'], label='Risk Averse', color='#2ca02c')
+plt.plot(range(len(investment_trajectories)), investment_trajectories['proposed_t_hmm'], label='HMM Framework', color='#1f77b4')
+plt.plot(range(len(investment_trajectories)), investment_trajectories['proposed_t_mrp'], label='MRP Framework', color='#ff7f0e')
+plt.plot(range(len(investment_trajectories)), investment_trajectories['proposed_t_risk_averse'], label='Risk Averse', color='#2ca02c')
 
 # Customizing the plot
 plt.title('Investment Trajectories Over Time (MPT, Normal)')
@@ -348,7 +348,7 @@ plt.ylabel('Value')
 plt.legend()
 plt.grid(alpha=0.3)
 plt.tight_layout()
-plt.savefig('Investment_Trajectory(MPT,Normal).png', dpi=300, bbox_inches='tight')
+# plt.savefig('Investment_Trajectory(MPT,Normal).png', dpi=300, bbox_inches='tight')
 plt.show()
 
 
