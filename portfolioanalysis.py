@@ -196,6 +196,13 @@ result = combined_df.pivot_table(index=['Method', 'Distribution'],
 result.reset_index(drop = True, inplace = True)
 print(result)
 
+result = combined_df.pivot_table(index=['Method', 'Distribution'], 
+                                 columns='Risk', 
+                                 values='final_investment_amount').reset_index()
+# result['diff'] = result['mpt'] - result['proposed']
+result.reset_index(drop = True, inplace = True)
+print(result)
+
 ##############################################################################
 
 # filter_columns = ['Method','Distribution','Risk','sharpe_ratio']

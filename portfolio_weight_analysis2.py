@@ -60,8 +60,8 @@ for lookup in filtered_df['lookup']:
 # Add the new columns to the combined_df dataframe
 filtered_df['min_indicator'] = min_indicator
 filtered_df['max_indicator'] = max_indicator
-filtered_df['sum'] = combined_df['min_indicator'] + combined_df['max_indicator']
-filtered_df.sort_values(['sum'])
+# filtered_df['sum'] = combined_df['min_indicator'] + combined_df['max_indicator']
+# filtered_df.sort_values(['sum'])
 
 
 pivot_df = filtered_df.pivot_table(index=['Method', 'Distribution'], columns='Risk', values='max_indicator', aggfunc='first')
